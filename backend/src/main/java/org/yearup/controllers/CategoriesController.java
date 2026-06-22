@@ -32,9 +32,16 @@ public class CategoriesController
     }
 
     @GetMapping("/{id}")
-    public Category getById(@PathVariable int id)
+    public ResponseEntity<Category> getById(@PathVariable int id)
     {
-        return categoryService.getById(id);
+        Category category = categoryService.getById(id);
+
+        if (category == null)
+        {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(category);
     }
 
     @GetMapping("/{categoryId}/products")

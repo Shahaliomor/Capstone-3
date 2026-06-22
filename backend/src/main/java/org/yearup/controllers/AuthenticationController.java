@@ -45,22 +45,26 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
         try
         {
+            // 1. Create authentication token
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
-
+            // 2. Authenticate user
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            // 3. Save authenticated user
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            // 4. Generate JWT token
             String jwt = tokenProvider.createToken(authentication, false);
-
+            // 5. Get user from database
             User user = userService.getByUserName(loginDto.getUsername());
-
+            // 6. Add token to headers
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+            // 7. Return success response
             return new ResponseEntity<>(new LoginResponseDto(jwt, user), httpHeaders, HttpStatus.OK);
         }
         catch (AuthenticationException e)
         {
-            // bad username/password -> 401 (not a 500)
+            // 8. Return 401 if login fails
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password.");
         }
     }
@@ -68,22 +72,24 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<User> register(@Valid @RequestBody RegisterUserDto newUser) {
-
+        // Check if the username already exists
         boolean exists = userService.exists(newUser.getUsername());
         if (exists)
         {
-            // duplicate username -> 400 (not a 500)
+            // If username exists, return 400 Bad Request
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Already Exists.");
         }
 
         // create user
         User user = userService.create(new User(0, newUser.getUsername(), newUser.getPassword(), newUser.getRole()));
 
-        // create profile
+        // Create an empty profile for the new user
         Profile profile = new Profile();
+        // Link the profile to the newly created user
         profile.setUserId(user.getId());
+        // Save the profile in the database
         profileService.create(profile);
-
+        // Return the created user with HTTP 201 Created
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 

@@ -140,7 +140,7 @@ public class User {
               '}';
    }
 
-   @JsonIgnore
+
    public String getRole()
    {
       if(authorities.size() > 0)

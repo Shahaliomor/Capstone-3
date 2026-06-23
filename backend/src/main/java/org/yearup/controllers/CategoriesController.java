@@ -52,7 +52,7 @@ public class CategoriesController
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Category> addCategory(@RequestBody Category category)
     {
         Category newCategory = categoryService.create(category);
@@ -60,14 +60,14 @@ public class CategoriesController
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Category updateCategory(@PathVariable int id, @RequestBody Category category)
     {
         return categoryService.update(id, category);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id)
     {
         categoryService.delete(id);

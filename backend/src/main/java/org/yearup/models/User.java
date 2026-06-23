@@ -41,7 +41,7 @@ public class User {
          this.authorities = new HashSet<>();
          String[] roles = role.split(",");
          for (String r : roles) {
-            String authority = r.trim().contains("ROLE_") ? r.trim() : "ROLE_" + r.trim();
+            String authority = r.trim().toUpperCase().contains("ROLE_") ? r.trim() : "ROLE_" + r.trim();
             this.authorities.add(new Authority(authority));
          }
       }
@@ -109,7 +109,7 @@ public class User {
 
    public void addRole(String role)
    {
-      String authority = role.trim().contains("ROLE_") ? role.trim() : "ROLE_" + role.trim();
+      String authority = role.trim().toUpperCase().contains("ROLE_") ? role.trim() : "ROLE_" + role.trim();
       this.authorities.add(new Authority(authority));
    }
 

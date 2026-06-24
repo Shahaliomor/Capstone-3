@@ -1,10 +1,8 @@
 package org.yearup.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yearup.models.ShoppingCart;
 import org.yearup.models.User;
 import org.yearup.service.ShoppingCartService;
@@ -40,6 +38,16 @@ public class ShoppingCartController
 
         // use the shoppingCartService to get all items in the cart and return the cart
         return shoppingCartService.getByUserId(userId);
+    }
+
+    @PostMapping("/products/{productId}")
+    public ResponseEntity<ShoppingCart> addToCart(@PathVariable int productId, Principal principal)
+    {
+        String userName = principal.getName();
+        User user = userService.getByUserName(userName);
+        int userId = user.getId();
+        ShoppingCart cart = shoppingCartService.addProduct(userId, productId);
+        return ResponseEntity.status(201).body(cart);
     }
 
     // add a POST method to add a product to the cart - the url should be

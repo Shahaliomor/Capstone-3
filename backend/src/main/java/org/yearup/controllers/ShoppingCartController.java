@@ -1,6 +1,7 @@
 package org.yearup.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yearup.models.ShoppingCart;
@@ -26,7 +27,7 @@ public class ShoppingCartController
 
 
 
-    // each method in this controller requires a Principal object as a parameter
+    @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
         // get the currently logged in username

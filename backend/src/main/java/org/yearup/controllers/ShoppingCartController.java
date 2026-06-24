@@ -10,8 +10,6 @@ import org.yearup.service.UserService;
 
 import java.security.Principal;
 
-// convert this class to a REST controller
-// only logged in users should have access to these actions
 @RestController
 @RequestMapping("/cart")
 @PreAuthorize("isAuthenticated()")
@@ -20,6 +18,11 @@ public class ShoppingCartController
     // a shopping cart controller depends on the service layer
     private ShoppingCartService shoppingCartService;
     private UserService userService;
+
+    public ShoppingCartController(ShoppingCartService shoppingCartService, UserService userService){
+        this.shoppingCartService=shoppingCartService;
+        this.userService=userService;
+    }
 
 
 

@@ -1,6 +1,7 @@
 package org.yearup.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/cart")
+@CrossOrigin
 @PreAuthorize("isAuthenticated()")
 public class ShoppingCartController
 {
@@ -37,7 +39,7 @@ public class ShoppingCartController
         int userId = user.getId();
 
         // use the shoppingCartService to get all items in the cart and return the cart
-        return null;
+        return shoppingCartService.getByUserId(userId);
     }
 
     // add a POST method to add a product to the cart - the url should be

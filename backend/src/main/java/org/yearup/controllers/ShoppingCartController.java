@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.ShoppingCart;
+import org.yearup.models.ShoppingCartItem;
 import org.yearup.models.User;
 import org.yearup.service.ShoppingCartService;
 import org.yearup.service.UserService;
@@ -57,6 +58,19 @@ public class ShoppingCartController
         int userId = user.getId();
 
         return shoppingCartService.clearCart(userId);
+    }
+
+    @PutMapping("/products/{productId}")
+    public ShoppingCart updateCartItem(@PathVariable int productId,
+                                       @RequestBody ShoppingCartItem item,
+                                       Principal principal)
+    {
+        String userName = principal.getName();
+
+        User user = userService.getByUserName(userName);
+        int userId = user.getId();
+
+        return shoppingCartService.updateProduct(userId, productId, item.getQuantity());
     }
 
     // add a POST method to add a product to the cart - the url should be

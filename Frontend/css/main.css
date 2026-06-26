@@ -533,3 +533,19 @@ main > .content {
     align-content: start;
 }
 
+.store-logo
+{
+    height: 70px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 15px;
+}
+
+.store-name
+{
+    font-size: 24px;
+    font-weight: bold;
+    color: #006b3c;
+    margin-right: 30px;
+    white-space: nowrap;
+}

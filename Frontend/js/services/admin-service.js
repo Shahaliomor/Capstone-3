@@ -3,6 +3,7 @@ let adminService;
 class AdminService
 {
     products = [];
+    categories = [];
 
     loadDashboard()
     {
@@ -41,6 +42,12 @@ class AdminService
                 </div>
             </div>
 
+            <div style="margin-bottom:30px;">
+                <button class="btn btn-primary" onclick="adminService.loadCategoryManagement()">
+                    📂 Manage Categories
+                </button>
+            </div>
+
             <div class="recent-orders">
                 <h2>Recent Orders</h2>
                 <div id="recent-orders-list">
@@ -54,6 +61,38 @@ class AdminService
         this.loadProductCount();
         this.loadCategoryCount();
         this.loadOrders();
+    }
+
+    loadCategoryManagement()
+    {
+        const main = document.getElementById("main");
+        main.innerHTML = "";
+
+        const page = document.createElement("div");
+        page.classList.add("admin-products-page");
+
+        page.innerHTML = `
+            <div class="admin-products-header">
+                <h1>📂 Category Management</h1>
+
+                <button class="admin-main-btn"
+                        onclick="adminService.showCategoryForm()">
+                    ➕ Add Category
+                </button>
+            </div>
+
+            <div class="admin-product-tools">
+                <button onclick="adminService.loadDashboard()">
+                    Back to Dashboard
+                </button>
+            </div>
+
+            <div id="admin-categories-table"></div>
+        `;
+
+        main.appendChild(page);
+
+        this.loadCategories();
     }
 
     loadProductCount()
@@ -169,6 +208,183 @@ class AdminService
                 templateBuilder.append("error", {error: "Loading products failed."}, "errors");
             });
     }
+    loadCategories()
+    {
+        axios.get(`${config.baseUrl}/categories`)
+            .then(response => {
+                this.categories = response.data;
+                this.displayCategories(this.categories);
+            })
+            .catch(error => {
+                templateBuilder.append(
+                    "error",
+                    { error: "Loading categories failed." },
+                    "errors"
+                );
+            });
+    }
+
+    displayCategories(categories)
+    {
+        const tableDiv = document.getElementById("admin-categories-table");
+
+        if(!categories.length)
+        {
+            tableDiv.innerHTML = "<p>No categories found.</p>";
+            return;
+        }
+
+        let html = `
+            <table class="admin-products-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+        `;
+
+        categories.forEach((category,index)=>{
+
+            html += `
+                <tr>
+
+                    <td>${category.categoryId}</td>
+
+                    <td>${category.name}</td>
+
+                    <td>${category.description}</td>
+
+                    <td>
+
+                        <button class="edit-btn"
+                            onclick="adminService.showCategoryForm(${category.categoryId})">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn"
+                            onclick="adminService.deleteCategory(${category.categoryId})">
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        });
+
+        html += `
+                </tbody>
+            </table>
+        `;
+
+        tableDiv.innerHTML = html;
+    }
+
+    showCategoryForm(categoryId = null)
+    {
+        let category = {
+            categoryId: "",
+            name: "",
+            description: ""
+        };
+
+        if(categoryId)
+        {
+            category = this.categories.find(c => c.categoryId === categoryId);
+        }
+
+        const form = document.createElement("div");
+        form.classList.add("admin-modal");
+
+        form.innerHTML = `
+            <div class="admin-form">
+                <h2>${categoryId ? "Edit Category" : "Add Category"}</h2>
+
+                <label>Name</label>
+                <input type="text" id="category-name" value="${category.name}">
+
+                <label>Description</label>
+                <textarea id="category-description">${category.description}</textarea>
+
+                <div class="admin-form-buttons">
+                    <button class="admin-save-btn" onclick="adminService.saveCategory(${categoryId})">Save</button>
+                    <button class="admin-cancel-btn" onclick="adminService.closeCategoryForm()">Cancel</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(form);
+    }
+
+    closeCategoryForm()
+    {
+        const modal = document.querySelector(".admin-modal");
+        if(modal)
+        {
+            modal.remove();
+        }
+    }
+
+    saveCategory(categoryId)
+    {
+        const category = {
+            name: document.getElementById("category-name").value,
+            description: document.getElementById("category-description").value
+        };
+
+        if(categoryId)
+        {
+            axios.put(`${config.baseUrl}/categories/${categoryId}`, category)
+                .then(response => {
+                    this.closeCategoryForm();
+                    this.loadCategories();
+                    this.loadCategoryCount();
+                    templateBuilder.append("message", {message: "Category updated successfully."}, "errors");
+                })
+                .catch(error => {
+                    templateBuilder.append("error", {error: "Category update failed."}, "errors");
+                });
+        }
+        else
+        {
+            axios.post(`${config.baseUrl}/categories`, category)
+                .then(response => {
+                    this.closeCategoryForm();
+                    this.loadCategories();
+                    this.loadCategoryCount();
+                    templateBuilder.append("message", {message: "Category added successfully."}, "errors");
+                })
+                .catch(error => {
+                    templateBuilder.append("error", {error: "Category add failed."}, "errors");
+                });
+        }
+    }
+
+    deleteCategory(categoryId)
+    {
+        if(!confirm("Are you sure you want to delete this category?"))
+        {
+            return;
+        }
+
+        axios.delete(`${config.baseUrl}/categories/${categoryId}`)
+            .then(response => {
+                this.loadCategories();
+                this.loadCategoryCount();
+                templateBuilder.append("message", {message: "Category deleted successfully."}, "errors");
+            })
+            .catch(error => {
+                templateBuilder.append("error", {
+                    error: "Category delete failed. This category may already have products."
+                }, "errors");
+            });
+    }
 
     displayProducts(products)
     {
@@ -200,7 +416,7 @@ class AdminService
         products.forEach((product, index) => {
             html += `
                 <tr>
-                    <td>${index + 1}</td>
+                    <td>${category.categoryId}</td>
                     <td><img src="./images/products/${product.imageUrl}" alt="${product.name}"></td>
                     <td>${product.name}</td>
                     <td>$${Number(product.price).toFixed(2)}</td>

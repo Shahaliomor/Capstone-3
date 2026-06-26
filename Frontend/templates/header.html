@@ -1,43 +1,58 @@
 {{#loggedin}}
 <div id="links">
-  <img src="./images/logo.svg" alt="grocerystore logo" />
+  <img src="./images/name.png"
+       alt="Shah's Halal Grocery Store Logo"
+       class="store-logo" />
+
+
+
   <a href="#" onclick="loadHome()">Home</a>
   <a href="#" onclick="editProfile()">Profile</a>
+
   {{#isAdmin}}
   <a href="#" onclick="showAdminDashboard()">Admin Dashboard</a>
   {{/isAdmin}}
+
   <a href="#" onclick="showCart()">View Cart</a>
 </div>
 
 <div>
-  Welcome&nbsp;<span style="font-weight: bold">{{username}}</span
-  >&nbsp;|&nbsp;<a
-    href="#"
-    onclick="
-      userService.logout();
-      return false;
-    "
-    >logout</a
-  >
+  Welcome&nbsp;<span style="font-weight:bold">{{username}}</span>
+  &nbsp;|&nbsp;
+
+  <a href="#"
+     onclick="
+            userService.logout();
+            return false;
+       ">
+    Logout
+  </a>
+
   <div class="cart" onclick="showCart()">
     <i class="fa-solid fa-cart-shopping"></i>
     <div id="cart-items">0</div>
   </div>
 </div>
-{{/loggedin}} {{#loggedout}}
+{{/loggedin}}
+
+{{#loggedout}}
 <div id="links">
-  <img src="./images/logo.svg" alt="grocerystore logo" />
+  <img src="./images/name.png"
+       alt="Shah's Halal Grocery Store Logo"
+       class="store-logo" />
+
+
+
   <a href="#" onclick="loadHome()">Home</a>
 </div>
 
 <div>
-  <a
-    href="#"
-    onclick="
-      showLoginForm();
-      return false;
-    "
-    >login</a
-  >
+  <a href="#"
+     onclick="
+            showLoginForm();
+            return false;
+       ">
+    Login
+  </a>
 </div>
 {{/loggedout}}

@@ -66,9 +66,30 @@ function saveProfile()
     profileService.updateProfile(profile);
 }
 
+function showRegisterForm()
+{
+    templateBuilder.build('register-form', {}, 'login');
+}
+
+function register()
+{
+    const username = document.getElementById("register-username").value;
+    const password = document.getElementById("register-password").value;
+    const confirm = document.getElementById("register-confirm").value;
+
+    userService.register(username, password, confirm);
+    hideModalForm();
+}
+
 function showCart()
 {
     cartService.loadCartPage();
+}
+
+function searchByName(control)
+{
+    productService.addNameFilter(control.value);
+    productService.search();
 }
 
 function showAdminDashboard()

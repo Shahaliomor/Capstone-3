@@ -87,9 +87,10 @@ class UserService {
         templateBuilder.build('header', user, 'header-user');
     }
 
-    register (username, password, confirm)
+    register(username, password, confirm)
     {
         const url = `${config.baseUrl}/register`;
+
         const register = {
             username: username,
             password: password,
@@ -98,16 +99,15 @@ class UserService {
         };
 
         axios.post(url, register)
-             .then(response => {
-                 console.log(response.data)
-             })
+            .then(response => {
+                templateBuilder.append("message", {
+                    message: "Account created successfully! Please login."
+                }, "errors");
+            })
             .catch(error => {
-
-                const data = {
-                    error: "User registration failed."
-                };
-
-                templateBuilder.append("error", data, "errors")
+                templateBuilder.append("error", {
+                    error: "User registration failed. Username may already exist."
+                }, "errors");
             });
     }
 

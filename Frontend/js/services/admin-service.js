@@ -4,6 +4,7 @@ class AdminService
 {
     products = [];
     categories = [];
+    orders = [];
 
     loadDashboard()
     {
@@ -42,10 +43,18 @@ class AdminService
                 </div>
             </div>
 
-            <div style="margin-bottom:30px;">
-                <button class="btn btn-primary" onclick="adminService.loadCategoryManagement()">
+            <div class="admin-dashboard-buttons">
+
+                <button class="btn btn-primary"
+                        onclick="adminService.loadCategoryManagement()">
                     📂 Manage Categories
                 </button>
+
+                <button class="btn btn-warning"
+                        onclick="adminService.loadOrderManagement()">
+                    📦 Manage Orders
+                </button>
+
             </div>
 
             <div class="recent-orders">
@@ -66,6 +75,38 @@ class AdminService
     loadCategoryManagement()
     {
         const main = document.getElementById("main");
+            main.innerHTML = "";
+
+            const page = document.createElement("div");
+            page.classList.add("admin-products-page");
+
+            page.innerHTML = `
+                <div class="admin-products-header">
+                    <h1>📂 Category Management</h1>
+
+                    <button class="admin-main-btn"
+                            onclick="adminService.showCategoryForm()">
+                        ➕ Add Category
+                    </button>
+                </div>
+
+                <div class="admin-product-tools">
+                    <button onclick="adminService.loadDashboard()">
+                        Back to Dashboard
+                    </button>
+                </div>
+
+                <div id="admin-categories-table"></div>
+            `;
+
+            main.appendChild(page);
+
+            this.loadCategories();
+    }
+
+    loadOrderManagement()
+    {
+        const main = document.getElementById("main");
         main.innerHTML = "";
 
         const page = document.createElement("div");
@@ -73,26 +114,113 @@ class AdminService
 
         page.innerHTML = `
             <div class="admin-products-header">
-                <h1>📂 Category Management</h1>
-
-                <button class="admin-main-btn"
-                        onclick="adminService.showCategoryForm()">
-                    ➕ Add Category
-                </button>
+                <h1>📦 Order Management</h1>
             </div>
 
             <div class="admin-product-tools">
+                <input
+                    type="text"
+                    id="admin-order-search"
+                    placeholder="Search orders..."
+                    onkeyup="adminService.searchOrders()">
+
                 <button onclick="adminService.loadDashboard()">
                     Back to Dashboard
                 </button>
             </div>
 
-            <div id="admin-categories-table"></div>
+            <div id="admin-orders-table"></div>
         `;
 
         main.appendChild(page);
 
-        this.loadCategories();
+        this.loadAllOrders();
+    }
+
+    loadAllOrders()
+    {
+        axios.get(`${config.baseUrl}/orders`)
+            .then(response => {
+
+                this.orders = response.data;
+
+                this.displayOrders(this.orders);
+
+            })
+            .catch(error => {
+
+                templateBuilder.append(
+                    "error",
+                    { error: "Loading orders failed." },
+                    "errors"
+                );
+
+            });
+    }
+
+    displayOrders(orders)
+    {
+        const table = document.getElementById("admin-orders-table");
+
+        if (orders.length === 0)
+        {
+            table.innerHTML = "<p>No orders found.</p>";
+            return;
+        }
+
+        let html = `
+            <table class="admin-products-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User ID</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Shipping Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        orders.forEach(order => {
+
+            html += `
+                <tr>
+                    <td>${order.orderId}</td>
+                    <td>${order.userId}</td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                    <td>$${Number(order.shippingAmount).toFixed(2)}</td>
+                    <td>${order.address}, ${order.city}, ${order.state} ${order.zip}</td>
+                </tr>
+            `;
+
+        });
+
+        html += `
+                </tbody>
+            </table>
+        `;
+
+        table.innerHTML = html;
+    }
+
+    searchOrders()
+    {
+        const keyword = document
+            .getElementById("admin-order-search")
+            .value
+            .toLowerCase();
+
+        const filtered = this.orders.filter(order =>
+            order.orderId.toString().includes(keyword) ||
+            order.userId.toString().includes(keyword) ||
+            order.address.toLowerCase().includes(keyword) ||
+            order.city.toLowerCase().includes(keyword) ||
+            order.state.toLowerCase().includes(keyword) ||
+            order.zip.toLowerCase().includes(keyword)
+        );
+
+        this.displayOrders(filtered);
     }
 
     loadProductCount()

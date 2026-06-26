@@ -189,10 +189,37 @@ class ShoppingCartService {
 
     checkout()
     {
+        const confirmed = confirm(
+    `🛒 Proceed to Checkout?
+
+    Payment Method:
+    Cash on Delivery (COD) only.
+
+    Please confirm your delivery address in your Profile before placing the order.
+
+    Do you want to continue?`
+        );
+
+        if(!confirmed)
+        {
+            return;
+        }
+
         const url = `${config.baseUrl}/orders`;
 
         axios.post(url, {})
             .then(response => {
+                alert(
+    `🎉 Order placed successfully!
+
+    Thank you for shopping at Shah's Halal Grocery Store.
+
+    Payment Method:
+    Cash on Delivery (COD)
+
+    Please keep cash ready upon delivery.`
+                );
+
                 const data = {
                     message: "Order placed successfully!"
                 };
@@ -209,7 +236,7 @@ class ShoppingCartService {
             })
             .catch(error => {
                 const data = {
-                    error: "Checkout failed."
+                    error: "Checkout failed. Please check your cart and address."
                 };
 
                 templateBuilder.append("error", data, "errors");

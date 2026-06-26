@@ -6,6 +6,7 @@ class ProductService {
 
 
     filter = {
+        name: undefined,
         cat: undefined,
         minPrice: undefined,
         maxPrice: undefined,
@@ -47,6 +48,12 @@ class ProductService {
 
     hasPhoto(photo){
         return this.photos.filter(p => p == photo).length > 0;
+    }
+
+    addNameFilter(name)
+    {
+        if(name === "") this.filter.name = undefined;
+        else this.filter.name = name.toLowerCase();
     }
 
     addCategoryFilter(cat)
@@ -124,6 +131,13 @@ class ProductService {
                     }
                  });
                  console.log(data.products);
+                 if(this.filter.name)
+                 {
+                     data.products = data.products.filter(product =>
+                         product.name.toLowerCase().includes(this.filter.name) ||
+                         product.description.toLowerCase().includes(this.filter.name)
+                     );
+                 }
                  templateBuilder.build('product', data, 'content', this.enableButtons);
 
              })

@@ -1,6 +1,13 @@
 <div class="filter-box">
     <h3>Filter</h3>
-
+    <div class="form-floating mb-3">
+        <input type="text"
+               class="form-control"
+               id="product-search"
+               placeholder="Search products"
+               onkeyup="searchByName(this)">
+        <label for="product-search">Search Product</label>
+    </div>
     <div class="form-floating mb-3">
         <select name="" id="category-select" class="form-select"
             onchange="setCategory(this)"

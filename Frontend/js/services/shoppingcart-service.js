@@ -68,75 +68,89 @@ class ShoppingCartService {
 
     loadCartPage()
     {
-        // templateBuilder.build("cart", this.cart, "main");
-
-        const main = document.getElementById("main")
+        const main = document.getElementById("main");
         main.innerHTML = "";
 
-        let div = document.createElement("div");
-        div.classList="filter-box";
-        main.appendChild(div);
+        let wrapper = document.createElement("div");
+        wrapper.classList.add("cart-page");
 
-        const contentDiv = document.createElement("div")
-        contentDiv.id = "content";
-        contentDiv.classList.add("content-form");
+        let cartLeft = document.createElement("div");
+        cartLeft.classList.add("cart-left");
 
-        const cartHeader = document.createElement("div")
-        cartHeader.classList.add("cart-header")
+        let cartHeader = document.createElement("div");
+        cartHeader.classList.add("cart-header");
 
-        const h1 = document.createElement("h1")
-        h1.innerText = "Cart";
+        let h1 = document.createElement("h1");
+        h1.innerText = "Shopping Cart";
         cartHeader.appendChild(h1);
 
-        const button = document.createElement("button");
-        button.classList.add("btn")
-        button.classList.add("btn-danger")
-        button.innerText = "Clear";
-        button.addEventListener("click", () => this.clearCart());
-        cartHeader.appendChild(button)
+        let clearButton = document.createElement("button");
+        clearButton.classList.add("btn", "btn-danger");
+        clearButton.innerText = "Clear Cart";
+        clearButton.addEventListener("click", () => this.clearCart());
+        cartHeader.appendChild(clearButton);
 
-        contentDiv.appendChild(cartHeader)
-        main.appendChild(contentDiv);
+        cartLeft.appendChild(cartHeader);
 
-        // let parent = document.getElementById("cart-item-list");
         this.cart.items.forEach(item => {
-            this.buildItem(item, contentDiv)
+            this.buildItem(item, cartLeft);
         });
+
+        let cartRight = document.createElement("div");
+        cartRight.classList.add("cart-summary");
+
+        let subtotal = document.createElement("h3");
+        subtotal.innerText = `Subtotal (${this.cart.items.length} item${this.cart.items.length !== 1 ? "s" : ""}): $${this.cart.total.toFixed(2)}`;
+        cartRight.appendChild(subtotal);
+
+        let checkoutButton = document.createElement("button");
+        checkoutButton.classList.add("checkout-btn");
+        checkoutButton.innerText = "Proceed to Checkout";
+        checkoutButton.addEventListener("click", () => this.checkout());
+        cartRight.appendChild(checkoutButton);
+
+        wrapper.appendChild(cartLeft);
+        wrapper.appendChild(cartRight);
+        main.appendChild(wrapper);
     }
 
     buildItem(item, parent)
     {
         let outerDiv = document.createElement("div");
-        outerDiv.classList.add("cart-item");
+        outerDiv.classList.add("amazon-cart-item");
 
-        let div = document.createElement("div");
-        outerDiv.appendChild(div);
-        let h4 = document.createElement("h4")
-        h4.innerText = item.product.name;
-        div.appendChild(h4);
-
-        let photoDiv = document.createElement("div");
-        photoDiv.classList.add("photo")
         let img = document.createElement("img");
-        img.src = `/images/products/${item.product.imageUrl}`
-        img.addEventListener("click", () => {
-            showImageDetailForm(item.product.name, img.src)
-        })
-        photoDiv.appendChild(img)
-        let priceH4 = document.createElement("h4");
-        priceH4.classList.add("price");
-        priceH4.innerText = `$${item.product.price}`;
-        photoDiv.appendChild(priceH4);
-        outerDiv.appendChild(photoDiv);
+        img.src = `./images/products/${item.product.imageUrl}`;
+        img.alt = item.product.name;
+        img.classList.add("cart-product-img");
 
-        let descriptionDiv = document.createElement("div");
-        descriptionDiv.innerText = item.product.description;
-        outerDiv.appendChild(descriptionDiv);
+        let infoDiv = document.createElement("div");
+        infoDiv.classList.add("cart-product-info");
 
-        let quantityDiv = document.createElement("div")
-        quantityDiv.innerText = `Quantity: ${item.quantity}`;
-        outerDiv.appendChild(quantityDiv)
+        let name = document.createElement("h4");
+        name.innerText = item.product.name;
+        infoDiv.appendChild(name);
 
+        let stock = document.createElement("p");
+        stock.innerText = "In Stock";
+        stock.classList.add("in-stock");
+        infoDiv.appendChild(stock);
+
+        let description = document.createElement("p");
+        description.innerText = item.product.description;
+        infoDiv.appendChild(description);
+
+        let quantity = document.createElement("p");
+        quantity.innerText = `Quantity: ${item.quantity}`;
+        infoDiv.appendChild(quantity);
+
+        let price = document.createElement("h4");
+        price.innerText = `$${item.product.price}`;
+        price.classList.add("cart-price");
+
+        outerDiv.appendChild(img);
+        outerDiv.appendChild(infoDiv);
+        outerDiv.appendChild(price);
 
         parent.appendChild(outerDiv);
     }
@@ -171,6 +185,35 @@ class ShoppingCartService {
 
                  templateBuilder.append("error", data, "errors")
              })
+    }
+
+    checkout()
+    {
+        const url = `${config.baseUrl}/orders`;
+
+        axios.post(url, {})
+            .then(response => {
+                const data = {
+                    message: "Order placed successfully!"
+                };
+
+                templateBuilder.append("message", data, "errors");
+
+                this.cart = {
+                    items: [],
+                    total: 0
+                };
+
+                this.updateCartDisplay();
+                this.loadCartPage();
+            })
+            .catch(error => {
+                const data = {
+                    error: "Checkout failed."
+                };
+
+                templateBuilder.append("error", data, "errors");
+            });
     }
 
     updateCartDisplay()

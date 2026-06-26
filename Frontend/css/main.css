@@ -372,4 +372,164 @@ main > .admin-dashboard {
     padding: 15px 0;
     font-size: 18px;
 }
+.admin-main-btn {
+    background: #00b894;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.admin-products-page {
+    grid-column: 1 / -1;
+    background: #f3f3f3;
+    min-height: 80vh;
+    padding: 30px;
+}
+
+.admin-products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-product-tools {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.admin-product-tools input {
+    width: 350px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.admin-product-tools button {
+    padding: 12px 18px;
+    border: none;
+    background: #555;
+    color: white;
+    border-radius: 6px;
+}
+
+.admin-products-table {
+    width: 100%;
+    background: white;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-products-table th,
+.admin-products-table td {
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.admin-products-table img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.edit-btn {
+    background: #0984e3;
+    color: white;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.delete-btn {
+    background: #d63031;
+    color: white;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+}
+
+.admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.admin-form {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.admin-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.admin-form input,
+.admin-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.admin-form textarea {
+    min-height: 80px;
+}
+
+.admin-form-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.admin-save-btn {
+    background: #00b894;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+
+.admin-cancel-btn {
+    background: #636e72;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+
+.stock-available {
+    color: green;
+    font-weight: bold;
+}
+
+.stock-out {
+    color: red;
+    font-weight: bold;
+}
+main > .content {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    align-content: start;
+}
 

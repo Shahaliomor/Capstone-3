@@ -97,12 +97,33 @@ class ProductService {
                  data.products = response.data;
 
                  data.products.forEach(product => {
-                     if(!this.hasPhoto(product.imageUrl))
-                     {
-                         product.imageUrl = "no-image.jpg";
-                     }
-                 })
+                     //if(!this.hasPhoto(product.imageUrl))
+                     //{
+                     //    product.imageUrl = "no-image.jpg";
+                     //}
 
+                    if(product.stock > 0)
+                    {
+                        product.stockMessage = `Available: ${product.stock}`;
+                        product.stockClass = "stock-available";
+                        product.cartButton = `
+                            <button class="btn btn-success" onclick="cartService.addToCart(${product.productId})">
+                                Add to Cart
+                            </button>
+                        `;
+                    }
+                    else
+                    {
+                        product.stockMessage = "Out of Stock";
+                        product.stockClass = "stock-out";
+                        product.cartButton = `
+                            <button class="btn btn-danger" disabled>
+                                Out of Stock
+                            </button>
+                        `;
+                    }
+                 });
+                 console.log(data.products);
                  templateBuilder.build('product', data, 'content', this.enableButtons);
 
              })

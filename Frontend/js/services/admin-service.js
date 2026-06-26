@@ -544,13 +544,13 @@ class AdminService
         products.forEach((product, index) => {
             html += `
                 <tr>
-                    <td>${category.categoryId}</td>
-                    <td><img src="./images/products/${product.imageUrl}" alt="${product.name}"></td>
-                    <td>${product.name}</td>
-                    <td>$${Number(product.price).toFixed(2)}</td>
-                    <td>${product.categoryId}</td>
-                    <td>${product.stock}</td>
-                    <td>${product.imageUrl}</td>
+                    <td>${product.productId}</td>
+                                <td><img src="./images/products/${product.imageUrl}" alt="${product.name}"></td>
+                                <td>${product.name}</td>
+                                <td>$${Number(product.price).toFixed(2)}</td>
+                                <td>${product.categoryId}</td>
+                                <td>${product.stock}</td>
+                                <td>${product.imageUrl}</td>
                     <td>
                         <button class="edit-btn" onclick="adminService.showProductForm(${product.productId})">Edit</button>
                         <button class="delete-btn" onclick="adminService.deleteProduct(${product.productId})">Delete</button>

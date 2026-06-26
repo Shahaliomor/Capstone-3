@@ -71,6 +71,11 @@ function showCart()
     cartService.loadCartPage();
 }
 
+function showAdminDashboard()
+{
+    adminService.loadDashboard();
+}
+
 function clearCart()
 {
     cartService.clearCart();

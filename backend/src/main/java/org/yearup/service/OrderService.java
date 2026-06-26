@@ -10,6 +10,7 @@ import org.yearup.repository.OrderRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OrderService
@@ -40,12 +41,17 @@ public class OrderService
         order.setCity(profile.getCity());
         order.setState(profile.getState());
         order.setZip(profile.getZip());
-        order.setShippingAmount(BigDecimal.ZERO);
+        // save cart total as order total
+        order.setShippingAmount(BigDecimal.valueOf(cart.getTotal()));
 
         Order savedOrder = orderRepository.save(order);
 
         shoppingCartService.clearCart(userId);
 
         return savedOrder;
+    }
+    public List<Order> getAllOrders()
+    {
+        return orderRepository.findAll();
     }
 }

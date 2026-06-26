@@ -9,6 +9,8 @@ import org.yearup.service.OrderService;
 import org.yearup.service.UserService;
 
 import java.security.Principal;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/orders")
@@ -32,5 +34,12 @@ public class OrderController
         int userId = user.getId();
 
         return orderService.createOrder(userId);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Order> getAllOrders()
+    {
+        return orderService.getAllOrders();
     }
 }

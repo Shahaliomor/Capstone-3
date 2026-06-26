@@ -3,6 +3,9 @@
   <img src="./images/logo.svg" alt="grocerystore logo" />
   <a href="#" onclick="loadHome()">Home</a>
   <a href="#" onclick="editProfile()">Profile</a>
+  {{#isAdmin}}
+  <a href="#" onclick="showAdminDashboard()">Admin Dashboard</a>
+  {{/isAdmin}}
   <a href="#" onclick="showCart()">View Cart</a>
 </div>
 
